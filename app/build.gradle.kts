@@ -59,9 +59,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Navigation Compose for handling navigation within the app
     val nav_version = "2.9.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
+    // Dagger Hilt for dependency injection
     implementation("com.google.dagger:hilt-android:2.56.2")
+    // KSP for Hilt's annotation processing
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
 }
