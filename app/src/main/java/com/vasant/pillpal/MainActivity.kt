@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.vasant.pillpal.ui.screens.AddMedsScreen
+import com.vasant.pillpal.ui.screens.AddMedsScreenPill
 import com.vasant.pillpal.ui.screens.HomeScreen
 import com.vasant.pillpal.ui.theme.PillPalTheme
 
@@ -20,7 +22,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PillPalTheme {
-                HomeScreen()
+                AddMedsScreen()
                 }
             }
         }
