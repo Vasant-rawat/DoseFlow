@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    kotlin("plugin.serialization") version "2.1.21"
     id("com.google.dagger.hilt.android")
 }
 
@@ -24,8 +25,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -60,11 +60,21 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Navigation Compose for handling navigation within the app
-    val nav_version = "2.9.0"
+    val nav_version = "2.8.4"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     // Dagger Hilt for dependency injection
     implementation("com.google.dagger:hilt-android:2.56.2")
     // KSP for Hilt's annotation processing
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+
+
+
+    //Room Db
+    val room_version = "2.7.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+
 }

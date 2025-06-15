@@ -21,17 +21,16 @@ import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.vasant.pillpal.ui.theme.BackgroundColor
 
 
-@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarHomeScreen() {
+fun TopBarHomeScreen(navHostController: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-
             .background(
                 color = BackgroundColor
             )
@@ -55,7 +54,6 @@ fun TopBarHomeScreen() {
                 modifier = Modifier.size(40.dp)
             )
         }
-
         Spacer(modifier = Modifier.width(4.dp))
         IconButton(onClick = {}, modifier = Modifier.padding(top = 10.dp, end = 10.dp)) {
             Icon(

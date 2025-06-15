@@ -41,15 +41,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavHostController
+import com.vasant.pillpal.ui.components.AddMedTop
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.SecondaryContainerColor
 import com.vasant.pillpal.ui.theme.jetbrainFamily
 import com.vasant.pillpal.ui.theme.pillColor
 
-@Preview
 @Composable
-fun AddMedsScreen() {
-    Scaffold { paddingValues ->
+fun AddMedsScreen(navController: NavHostController) {
+    Scaffold(
+        topBar = { AddMedTop(navController)},
+        containerColor = BackgroundColor,
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -81,15 +85,16 @@ fun AddTimePill(
             .fillMaxWidth()
             .background(pillColor)
             .clickable(
-                onClick = { showTimePicker = true }
-            )
-            .background(shape = RoundedCornerShape(13.dp), color = pillColor)) {
+                onClick = { showTimePicker = true })
+            .background(shape = RoundedCornerShape(13.dp), color = pillColor)
+    ) {
         Column {
             Text(
                 modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 10.dp),
                 text = "Add Time",
                 fontFamily = jetbrainFamily,
                 fontWeight = FontWeight.Bold,
+                color = Color.Black.copy(alpha = 0.8f),
                 fontSize = 18.sp
             )
             Card(
@@ -97,9 +102,7 @@ fun AddTimePill(
                     .padding(start = 30.dp, end = 30.dp, bottom = 15.dp)
 
                     .border(
-                        width = 1.dp,
-                        color = Color.Gray,
-                        shape = RoundedCornerShape(8.dp)
+                        width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(8.dp)
                     )
             ) {
                 Row(
@@ -112,6 +115,7 @@ fun AddTimePill(
                         text = "Time: $Time",
                         fontFamily = jetbrainFamily,
                         fontWeight = FontWeight.Medium,
+                        color = Color.Black.copy(alpha = 0.8f),
                         fontSize = 16.sp,
                         modifier = Modifier.padding(10.dp),
                     )
@@ -119,15 +123,12 @@ fun AddTimePill(
             }
         }
         if (showTimePicker) {
-            AddTimePickerDialog(
-                onConfirm = { hour, minute ->
-                    Time = String.format("%02d:%02d", hour, minute)
-                    showTimePicker = false
-                },
-                onDisMiss = {
-                    showTimePicker = false
-                }
-            )
+            AddTimePickerDialog(onConfirm = { hour, minute ->
+                Time = String.format("%02d:%02d", hour, minute)
+                showTimePicker = false
+            }, onDisMiss = {
+                showTimePicker = false
+            })
         }
     }
 }
@@ -177,9 +178,9 @@ fun AddMedsScreenPill(
                 value,
                 onValueChange = { value = it },
                 textStyle = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .background(Color.White),
+                modifier = Modifier.background(Color.White),
                 colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,
@@ -251,6 +252,7 @@ fun CustomButton(title: String, onClick: () -> Unit, color: Color) {
         Text(
             text = title,
             fontFamily = jetbrainFamily,
+            color = Color.Black.copy(alpha = 0.8f),
             fontWeight = FontWeight.W600,
             fontSize = 16.sp,
             modifier = Modifier.padding(start = 30.dp, end = 30.dp, top = 15.dp, bottom = 15.dp)

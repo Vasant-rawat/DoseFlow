@@ -22,16 +22,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PillPalTheme {
-                AddMedsScreen()
-                }
+                PillPalApp()
             }
         }
     }
-
+}
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     PillPalTheme {
-        HomeScreen()
+        PillPalApp()
     }
 }

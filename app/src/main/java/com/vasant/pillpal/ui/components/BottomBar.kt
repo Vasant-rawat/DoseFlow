@@ -1,6 +1,5 @@
 package com.vasant.pillpal.ui.components
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -19,19 +17,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.vasant.pillpal.R
+import com.vasant.pillpal.ui.navigation.NavigationRoute
 import com.vasant.pillpal.ui.theme.BackgroundColor
 
-@Preview
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(navController: NavHostController) {
     val isSelected by remember {
         mutableStateOf(false)
     }
@@ -41,7 +38,9 @@ fun BottomNavigationBar() {
             .background(
                 BackgroundColor
             )
-            .padding(top = 12.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = {}) {
             Box() {
@@ -55,13 +54,12 @@ fun BottomNavigationBar() {
             }
         }
         Spacer(Modifier.weight(1f))
-        IconButton(onClick = {}) {
+        IconButton(onClick = { navController.navigate(NavigationRoute.AddMedicineScreen) }) {
             Box() {
-
                 Icon(
                     painter = painterResource(R.drawable.add),
                     tint = Color.Unspecified,
-                    contentDescription = "Home Icon",
+                    contentDescription = "Add Icon",
                     modifier = Modifier.size(40.dp)
                 )
             }
