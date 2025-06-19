@@ -64,6 +64,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     // Dagger Hilt for dependency injection
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.dagger:hilt-android:2.56.2")
     // KSP for Hilt's annotation processing
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")

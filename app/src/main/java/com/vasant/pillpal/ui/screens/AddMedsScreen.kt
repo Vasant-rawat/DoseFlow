@@ -37,21 +37,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.vasant.pillpal.data.db.MedicineEvent
 import com.vasant.pillpal.ui.components.AddMedTop
+import com.vasant.pillpal.ui.presentation.MedicineState
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.SecondaryContainerColor
 import com.vasant.pillpal.ui.theme.jetbrainFamily
 import com.vasant.pillpal.ui.theme.pillColor
+import com.vasant.pillpal.ui.viewmodel.MedicineViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun AddMedsScreen(navController: NavHostController) {
+fun AddMedsScreen(
+    navController: NavHostController, medicineViewModel: MedicineViewModel = hiltViewModel()
+) {
     Scaffold(
-        topBar = { AddMedTop(navController)},
+        topBar = { AddMedTop(navController) },
         containerColor = BackgroundColor,
     ) { paddingValues ->
         Column(
@@ -61,21 +68,35 @@ fun AddMedsScreen(navController: NavHostController) {
                 .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            AddMedsScreenPill(title = "Medicine Name")
-            AddMedsScreenPill(title = "Dosage")
-            AddTimePill()
+            AddMedsScreenPill(
+                currentValue = medicineViewModel.state,
+                title = "Medicine Name",
+                Event = medicineViewModel::onEvent,
+            )
+            AddMedsScreenPill(
+                title = "Dosage",
+                medicineViewModel::onEvent,
+                medicineViewModel.state,
+            )
+            AddTimePill(medicineViewModel)
             Row {
-                CustomButton(title = "Cancel", onClick = {}, Color.Transparent)
+                CustomButton(
+                    title = "Cancel",
+                    onClick = { navController.popBackStack() },
+                    Color.Transparent
+                )
                 Spacer(modifier = Modifier.weight(1f))
-                CustomButton(title = "Save", onClick = {}, SecondaryContainerColor)
+                CustomButton(title = "Save", onClick = {
+                    medicineViewModel.onEvent(MedicineEvent.SaveMedicine)
+                    navController.popBackStack()
+                }, SecondaryContainerColor)
             }
         }
     }
 }
 
 @Composable
-fun AddTimePill(
-) {
+fun AddTimePill(medicineViewModel: MedicineViewModel) {
     var showTimePicker by remember { mutableStateOf(false) }
     var Time by remember { mutableStateOf(" ") }
     Box(
@@ -125,6 +146,7 @@ fun AddTimePill(
         if (showTimePicker) {
             AddTimePickerDialog(onConfirm = { hour, minute ->
                 Time = String.format("%02d:%02d", hour, minute)
+                medicineViewModel.onEvent(MedicineEvent.DateChanged(date = Time))
                 showTimePicker = false
             }, onDisMiss = {
                 showTimePicker = false
@@ -138,8 +160,10 @@ fun AddTimePill(
 
 fun AddMedsScreenPill(
     title: String,
+    Event: (MedicineEvent) -> Unit,
+    currentValue: MutableStateFlow<MedicineState>,
 ) {
-    var value by remember { mutableStateOf("") }
+    val value = currentValue.collectAsStateWithLifecycle()
     Card(
         Modifier
             .fillMaxWidth()
@@ -147,9 +171,7 @@ fun AddMedsScreenPill(
             containerColor = pillColor
         )
     ) {
-        // Show the time picker dialog if Addtime is true
         Column(modifier = Modifier.padding(bottom = 10.dp)) {
-
             Row(
                 modifier = Modifier
                     .padding(start = 15.dp, end = 10.dp, top = 10.dp)
@@ -175,12 +197,27 @@ fun AddMedsScreenPill(
             colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F7F8))
         ) {
             TextField(
-                value,
-                onValueChange = { value = it },
+                value = if (title == "Medicine Name") value.value.medicineName else if (title == "Dosage") value.value.dosage else value.value.note
+                    ?: "",
+                onValueChange = {
+                    when (title) {
+                        "Medicine Name" -> Event(MedicineEvent.MedicineNameChanged(medicineName = it))
+                        "Dosage" -> Event(MedicineEvent.AddDosageChange(dosage = it))
+                        else -> Event(
+                            MedicineEvent.SaveMedicineName(
+                                medicineName = value.value.medicineName,
+                                date = value.value.date,
+                                dosage = value.value.dosage,
+                                note = it
+                            )
+                        )
+                    }
+                },
                 textStyle = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.background(Color.White),
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,

@@ -15,7 +15,9 @@ import com.vasant.pillpal.ui.screens.AddMedsScreen
 import com.vasant.pillpal.ui.screens.AddMedsScreenPill
 import com.vasant.pillpal.ui.screens.HomeScreen
 import com.vasant.pillpal.ui.theme.PillPalTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
