@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.vasant.pillpal.data.db.Medicine
 import com.vasant.pillpal.data.db.MedicineEvent
 import com.vasant.pillpal.repository.MedicineRepo
+import com.vasant.pillpal.ui.components.setUpAlarm
 import com.vasant.pillpal.ui.presentation.MedicineState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,9 +33,12 @@ class MedicineViewModel @Inject constructor(
             is MedicineEvent.SaveMedicine -> {
                 val medicine = Medicine(
                     medName = _state.value.medicineName,
-                    date = _state.value.date,
+                    time = _state.value.date,
                     dosage = _state.value.dosage,
                     note = _state.value.note
+                )
+                setUpAlarm(
+                    context = event.context, medicine
                 )
                 viewModelScope.launch {
                     medicineRepo.addMedicine(medicine = medicine)
@@ -42,7 +46,7 @@ class MedicineViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         medicineName = "",
-                        date = "",
+                        date = 0,
                         dosage = "",
                         note = null
                     )
@@ -58,7 +62,7 @@ class MedicineViewModel @Inject constructor(
             is MedicineEvent.SaveMedicineName -> {
                 val medicine = Medicine(
                     medName = event.medicineName,
-                    date = event.date,
+                    time = event.date,
                     dosage = event.dosage,
                     note = event.note,
                     isCompleted = event.isCompleted
@@ -85,9 +89,24 @@ class MedicineViewModel @Inject constructor(
                 Log.d("Viewmodel", "onEvent: it.date = ${_state.value}")
             }
 
+            is MedicineEvent.PendingMedicine -> {
+                val medicineData = Medicine(
+                    id = event.data.id,
+                    medName = event.data.medName,
+                    time = event.data.time,
+                    dosage = event.data.dosage,
+                    note = event.data.note,
+                    isCompleted = true
+                )
+                viewModelScope.launch {
+                    medicineRepo.updateMedicine(medicineData)
+                }
+            }
+
+
             is MedicineEvent.MedicineNameChanged -> {
                 _state.update {
-                    it.copy(medicineName =  event.medicineName)
+                    it.copy(medicineName = event.medicineName)
                 }
                 Log.d("Viewmodel", "onEvent: medicineName change = ${_state.value}")
             }

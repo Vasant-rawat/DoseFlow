@@ -22,7 +22,7 @@ object AppModule {
         return Room.databaseBuilder(
             context = context, MedicineDatabase::class.java,
             name = "medicine_db"
-        ).build();
+        ).fallbackToDestructiveMigration(true).build();
     }
 
     @Singleton

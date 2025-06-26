@@ -1,6 +1,11 @@
 package com.vasant.pillpal.ui.screens
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.icu.util.Calendar
+import android.net.Uri
+import android.provider.Settings
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,12 +57,30 @@ import com.vasant.pillpal.ui.theme.SecondaryContainerColor
 import com.vasant.pillpal.ui.theme.jetbrainFamily
 import com.vasant.pillpal.ui.theme.pillColor
 import com.vasant.pillpal.ui.viewmodel.MedicineViewModel
+import com.vasant.pillpal.utils.ALARM_PERMISSION
+import com.vasant.pillpal.utils.NOTIFICATION_PERMISSION
+import com.vasant.pillpal.utils.getFormattedTime
+import com.vasant.pillpal.utils.getTimeInMillis
+import com.vasant.pillpal.utils.hasPermission
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun AddMedsScreen(
-    navController: NavHostController, medicineViewModel: MedicineViewModel = hiltViewModel()
+    navController: NavHostController,
+    medicineViewModel: MedicineViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val intent = Intent(
+        Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+    ).apply {
+        data = Uri.fromParts("package", context.packageName, null)
+    }
+    val notificaionIntent = Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+    ).apply {
+        data = Uri.fromParts("package", context.packageName, null)
+    }
+
     Scaffold(
         topBar = { AddMedTop(navController) },
         containerColor = BackgroundColor,
@@ -87,8 +111,40 @@ fun AddMedsScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 CustomButton(title = "Save", onClick = {
-                    medicineViewModel.onEvent(MedicineEvent.SaveMedicine)
-                    navController.popBackStack()
+                    Log.d("Kool", "AddMedsScreen: ${hasPermission(context, ALARM_PERMISSION)}")
+                    Log.d(
+                        "Kool",
+                        "AddMedsScreen: NOTIFICATION ${
+                            hasPermission(
+                                context,
+                                NOTIFICATION_PERMISSION
+                            )
+                        }"
+                    )
+                    if (!hasPermission(context, ALARM_PERMISSION)
+                    ) {
+
+                        AlertDialog.Builder(context).setTitle("Permission Required")
+                            .setMessage(
+                                "To ensure you receive timely medication reminders Doseflow needs permission to set precise alarms.Please tap 'Go to Settings' and enable 'Allow setting alarms and reminders' for our app ."
+                            ).setPositiveButton("Go to Settings") { _, _ ->
+                                context.startActivity(intent)
+                            }.setNegativeButton("Cancel", null)
+                            .show()
+                    } else if (!hasPermission(context, NOTIFICATION_PERMISSION)) {
+                        AlertDialog.Builder(context).setTitle("Permission Required")
+                            .setMessage(
+                                "To ensure you receive timely medication reminders Doseflow needs permission to set precise alarms.Please tap 'Go to Settings' and enable 'Allow Notification' for our app ."
+                            ).setPositiveButton("Go to Settings") { _, _ ->
+                                context.startActivity(notificaionIntent)
+                            }.setNegativeButton("Cancel", null)
+                            .show()
+                    } else {
+                        medicineViewModel.onEvent(MedicineEvent.SaveMedicine(context))
+                        navController.popBackStack()
+                        Log.d("else", "AddMedsScreen: ")
+
+                    }
                 }, SecondaryContainerColor)
             }
         }
@@ -98,7 +154,7 @@ fun AddMedsScreen(
 @Composable
 fun AddTimePill(medicineViewModel: MedicineViewModel) {
     var showTimePicker by remember { mutableStateOf(false) }
-    var Time by remember { mutableStateOf(" ") }
+    var time by remember { mutableStateOf("") }
     Box(
         modifier = Modifier
             .padding(20.dp)
@@ -133,7 +189,7 @@ fun AddTimePill(medicineViewModel: MedicineViewModel) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Time: $Time",
+                        text = "Time: $time",
                         fontFamily = jetbrainFamily,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black.copy(alpha = 0.8f),
@@ -145,8 +201,16 @@ fun AddTimePill(medicineViewModel: MedicineViewModel) {
         }
         if (showTimePicker) {
             AddTimePickerDialog(onConfirm = { hour, minute ->
-                Time = String.format("%02d:%02d", hour, minute)
-                medicineViewModel.onEvent(MedicineEvent.DateChanged(date = Time))
+                val mili = getTimeInMillis(hour, minute)
+                time = getFormattedTime(mili)
+                medicineViewModel.onEvent(
+                    MedicineEvent.DateChanged(
+                        date = getTimeInMillis(
+                            hour = hour,
+                            minute = minute
+                        )
+                    )
+                )
                 showTimePicker = false
             }, onDisMiss = {
                 showTimePicker = false

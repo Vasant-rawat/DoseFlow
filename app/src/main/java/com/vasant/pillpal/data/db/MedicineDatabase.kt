@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.vasant.pillpal.data.db.dao.MedicineDao
 
 @Database(
-    entities = [Medicine::class], version = 1, exportSchema = true
+    entities = [Medicine::class], version = 2, exportSchema = true
 )
 abstract class MedicineDatabase : RoomDatabase() {
     abstract fun medicineDao(): MedicineDao
