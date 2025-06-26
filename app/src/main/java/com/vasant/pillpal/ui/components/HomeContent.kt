@@ -185,7 +185,7 @@ fun MedicineDisplaySection(medicine: State<List<Medicine>>, medicineViewModel: M
                                 medicineViewModel.onEvent(
                                     MedicineEvent.PendingMedicine(data)
                                 )
-                                true
+                                false
                             } else {
                                 false
                             }
