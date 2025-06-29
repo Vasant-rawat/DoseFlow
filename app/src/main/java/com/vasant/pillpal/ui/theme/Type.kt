@@ -13,6 +13,12 @@ val jetbrainFamily = FontFamily(
     Font(R.font.medium, FontWeight.Medium),
     Font(R.font.jetbrainsmonobold, FontWeight.Bold)
 )
+val rubikFamily = FontFamily(
+    Font(R.font.rubikregular, FontWeight.Normal),
+    Font(R.font.rubikbold, FontWeight.Bold),
+    Font(R.font.rubiksemibold, FontWeight.SemiBold),
+    Font(R.font.rubikblack, FontWeight.Black)
+)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
