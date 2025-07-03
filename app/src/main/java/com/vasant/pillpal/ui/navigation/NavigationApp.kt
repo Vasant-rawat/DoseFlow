@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.vasant.pillpal.ui.screens.AuthScreens.SignIn
+import com.vasant.pillpal.ui.screens.AuthScreens.SignUpScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.WelcomeScreen
 
 
@@ -31,7 +32,15 @@ fun NavigationApp() {
                 SignIn(navController)
             }
 
-            composable<AuthenticationRoute.SingUpScreen> {
+            composable<AuthenticationRoute.SingUpScreen>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { fullWidth -> fullWidth },
+                        animationSpec = tween(900)
+                    )
+                }
+            ) {
+                SignUpScreen(navController)
             }
 
             composable<AuthenticationRoute.WelcomeScreen>(

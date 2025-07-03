@@ -17,6 +17,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,25 +41,23 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.vasant.pillpal.R
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.SecondaryContainerColor
 import com.vasant.pillpal.ui.theme.rubikFamily
-
-@Preview
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isValidate = remember { mutableStateOf(false) }
     val isPasswordShown = remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    val comfirmPasswor = remember { mutableStateOf("") }
+    val comfirmPassword = remember { mutableStateOf("") }
     val showMismatchError =
-        comfirmPasswor.value.isNotEmpty() && password.value != comfirmPasswor.value
+        comfirmPassword.value.isNotEmpty() && password.value != comfirmPassword.value
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -141,8 +141,6 @@ fun SignUpScreen() {
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(start = 10.dp, top = 12.dp, bottom = 6.dp)
                 )
-
-
                 TextField(
                     value = password.value,
                     onValueChange = { password.value = it },
@@ -207,7 +205,6 @@ fun SignUpScreen() {
                     modifier = Modifier.padding(start = 10.dp, top = 12.dp, bottom = 6.dp)
                 )
 
-
                 TextField(
                     value = password.value,
                     onValueChange = { password.value = it },
@@ -266,6 +263,29 @@ fun SignUpScreen() {
                     ),
 
                     )
+
+                Button(
+                    onClick = {},
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .padding(40.dp)
+                        .fillMaxWidth(),
+                    colors = ButtonColors(
+                        containerColor = SecondaryContainerColor,
+                        contentColor = Color.White,
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = Color.Transparent
+                    )
+                ) {
+                    Text(
+                        "Sign Up",
+                        fontFamily = rubikFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp
+                    )
+                }
+
+
             }
         }
     }
