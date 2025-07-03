@@ -17,6 +17,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -266,6 +268,29 @@ fun SignUpScreen() {
                     ),
 
                     )
+
+                Button(
+                    onClick = {},
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .padding(40.dp)
+                        .fillMaxWidth(),
+                    colors = ButtonColors(
+                        containerColor = SecondaryContainerColor,
+                        contentColor = Color.White,
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = Color.Transparent
+                    )
+                ) {
+                    Text(
+                        "Sign Up",
+                        fontFamily = rubikFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp
+                    )
+                }
+
+
             }
         }
     }
