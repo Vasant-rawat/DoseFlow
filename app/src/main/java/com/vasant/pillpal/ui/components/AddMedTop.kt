@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import com.vasant.pillpal.R
-import com.vasant.pillpal.ui.navigation.NavigationRoute
+import com.vasant.pillpal.ui.navigation.MainUiRoute
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.jetbrainFamily
 
@@ -41,7 +41,7 @@ fun AddMedTop(
             }
         },
         navigationIcon = {
-            IconButton(onClick = { navController.navigate(NavigationRoute.HomeScreen) }) {
+            IconButton(onClick = { navController.navigate(MainUiRoute.HomeScreen) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.backarrow),
                     contentDescription = "Back Icon"

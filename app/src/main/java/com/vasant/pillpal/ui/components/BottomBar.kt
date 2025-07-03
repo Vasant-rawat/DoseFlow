@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.vasant.pillpal.R
+import com.vasant.pillpal.ui.navigation.MainUiRoute
 import com.vasant.pillpal.ui.navigation.NavigationRoute
 import com.vasant.pillpal.ui.theme.BackgroundColor
 
@@ -54,7 +55,7 @@ fun BottomNavigationBar(navController: NavHostController) {
             }
         }
         Spacer(Modifier.weight(1f))
-        IconButton(onClick = { navController.navigate(NavigationRoute.AddMedicineScreen) }) {
+        IconButton(onClick = { navController.navigate(MainUiRoute.AddMedicineScreen) }) {
             Box() {
                 Icon(
                     painter = painterResource(R.drawable.add),
