@@ -2,7 +2,6 @@ package com.vasant.pillpal.ui.screens.AuthScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,11 +46,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vasant.pillpal.R
+import com.vasant.pillpal.ui.navigation.AuthenticationRoute
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.SecondaryContainerColor
 import com.vasant.pillpal.ui.theme.rubikFamily
+import com.vasant.pillpal.ui.viewmodel.FirebaseViewModel
 
 const val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
 private fun checkEmail(email: String): Boolean {
@@ -59,7 +61,7 @@ private fun checkEmail(email: String): Boolean {
 }
 
 @Composable
-fun SignIn(navController: NavController) {
+fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltViewModel()) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isValidate = remember { mutableStateOf(false) }
@@ -206,7 +208,9 @@ fun SignIn(navController: NavController) {
 
                     )
                 Button(
-                    onClick = {},
+                    onClick = {
+                        viewModel.login(email = email.value, password = password.value)
+                    },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
                         .padding(40.dp)
@@ -233,7 +237,9 @@ fun SignIn(navController: NavController) {
                 ) {
                     Text(text = "Don't Have an Account ?")
                     Button(
-                        onClick = {}, colors = ButtonDefaults.buttonColors(
+                        onClick = {
+                            navController.navigate(AuthenticationRoute.SingUpScreen)
+                        }, colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
 
                             )
@@ -243,8 +249,6 @@ fun SignIn(navController: NavController) {
                             color = SecondaryContainerColor,
                             fontWeight = FontWeight.SemiBold,
                             fontFamily = rubikFamily,
-                            modifier = Modifier.clickable {
-                            }
                         )
                     }
                 }

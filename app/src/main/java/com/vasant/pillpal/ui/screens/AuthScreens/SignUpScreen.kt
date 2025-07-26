@@ -43,13 +43,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vasant.pillpal.R
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.SecondaryContainerColor
 import com.vasant.pillpal.ui.theme.rubikFamily
+import com.vasant.pillpal.ui.viewmodel.FirebaseViewModel
+
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController, firebase: FirebaseViewModel= hiltViewModel()) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isValidate = remember { mutableStateOf(false) }
@@ -64,17 +67,16 @@ fun SignUpScreen(navController: NavController) {
             .background(BackgroundColor)
     ) {
         Box(
-            Modifier
-                .fillMaxSize()
+            Modifier.fillMaxSize()
         ) {
             Image(
                 painter = painterResource(R.drawable.backgroun2),
                 contentDescription = null,
-                contentScale = ContentScale.FillWidth, modifier = Modifier.fillMaxWidth()
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier.fillMaxWidth()
             )
         }
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart)
-        {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(
                     "Sign Up ",
@@ -87,7 +89,8 @@ fun SignUpScreen(navController: NavController) {
                     Modifier
                         .width(80.dp)
                         .clip(RoundedCornerShape(30.dp)),
-                    color = SecondaryContainerColor, thickness = 5.dp
+                    color = SecondaryContainerColor,
+                    thickness = 5.dp
                 )
                 Spacer(Modifier.height(20.dp))
 
@@ -123,14 +126,12 @@ fun SignUpScreen(navController: NavController) {
 
                     ),
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Email
+                        imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = {
                             focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
+                        }),
 
                     )
 
@@ -186,14 +187,12 @@ fun SignUpScreen(navController: NavController) {
 
                     ),
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Email
+                        imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = {
                             focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
+                        }),
 
                     )
 
@@ -253,19 +252,23 @@ fun SignUpScreen(navController: NavController) {
 
                     ),
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Email
+                        imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = {
                             focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
+                        }),
 
                     )
 
                 Button(
-                    onClick = {},
+                    onClick = {
+
+                            firebase.singUp(
+                                email = email.value,
+                                password = password.value.toString()
+                            )
+                    },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
                         .padding(40.dp)

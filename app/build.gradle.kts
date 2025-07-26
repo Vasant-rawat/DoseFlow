@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization") version "2.1.21"
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -50,6 +51,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -64,14 +66,14 @@ dependencies {
 
     // Dagger Hilt for dependency injection
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("com.google.dagger:hilt-android:2.56.2")
+    implementation("com.google.dagger:hilt-android:2.56.1")
     // KSP for Hilt's annotation processing
-    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
+    ksp("com.google.dagger:hilt-android-compiler:2.56.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
 
 
-   //Gson`
+   //Gson
     implementation("com.google.code.gson:gson:2.10.1")
 
     //Room Db
