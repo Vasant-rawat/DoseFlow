@@ -1,5 +1,6 @@
 package com.vasant.pillpal.ui.screens.AuthScreens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,10 +53,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vasant.pillpal.R
 import com.vasant.pillpal.ui.navigation.AuthenticationRoute
+import com.vasant.pillpal.ui.navigation.MainUiRoute
+import com.vasant.pillpal.ui.navigation.NavigationRoute
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.SecondaryContainerColor
 import com.vasant.pillpal.ui.theme.rubikFamily
 import com.vasant.pillpal.ui.viewmodel.FirebaseViewModel
+import com.vasant.pillpal.utils.FirebaseState
 
 const val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
 private fun checkEmail(email: String): Boolean {
@@ -73,6 +79,31 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
             .fillMaxSize()
             .background(BackgroundColor)
     ) {
+        if (viewModel.firebaseState == FirebaseState.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black.copy(0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+
+            }
+        } else if (viewModel.authState.Success) {
+            Toast.makeText(
+                LocalContext.current, "User was Sing In successfully ", Toast.LENGTH_SHORT
+            ).show()
+            navController.navigate(MainUiRoute.HomeScreen) {
+                popUpTo(NavigationRoute.AuthScreens) { inclusive = true }
+            }
+            viewModel.firebaseState = FirebaseState.IsIdle
+        } else if (viewModel.authState.Error != null) {
+            Toast.makeText(
+                LocalContext.current, "${viewModel.authState.Error}", Toast.LENGTH_SHORT
+            ).show()
+        }
+
+
         Box(
             modifier = Modifier.size(430.dp),
         ) {
@@ -87,6 +118,7 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
 
 
             Column(modifier = Modifier.padding(10.dp)) {
+
                 Text(
                     text = "Sign In",
                     fontFamily = rubikFamily,
@@ -97,7 +129,8 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
                     Modifier
                         .width(80.dp)
                         .clip(RoundedCornerShape(30.dp)),
-                    color = SecondaryContainerColor, thickness = 5.dp
+                    color = SecondaryContainerColor,
+                    thickness = 5.dp
                 )
                 Spacer(Modifier.height(20.dp))
 
@@ -130,20 +163,13 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
 
                     ),
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Email
+                        imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = {
-                            isValidate.value = checkEmail(email.value)
                             focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
-
-                    )
-
-
-
+                        }),
+                )
                 Text(
                     text = "Password",
                     fontFamily = rubikFamily,
@@ -176,9 +202,8 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
                                 )
                             }
                         }
-
-
                     },
+
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Transparent)
@@ -196,20 +221,23 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
 
                     ),
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Email
+                        imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = {
-                            isValidate.value = checkEmail(email.value)
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
+                        onDone = {
+                            if (password.value.isNotEmpty()) isValidate.value = true
+                            focusManager.clearFocus()
+                        }),
 
                     )
                 Button(
                     onClick = {
-                        viewModel.login(email = email.value, password = password.value)
+                        if (checkEmail(email.value) && password.value.isNotEmpty()) {
+                            viewModel.login(email = email.value, password = password.value)
+                        } else {
+                            isValidate.value = true
+                        }
+
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
@@ -222,6 +250,7 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
                         disabledContentColor = Color.Transparent
                     )
                 ) {
+
                     Text(
                         "Sign In",
                         fontFamily = rubikFamily,
@@ -230,8 +259,7 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
                     )
                 }
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {

@@ -7,9 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.vasant.pillpal.ui.screens.AddMedsScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.SignIn
 import com.vasant.pillpal.ui.screens.AuthScreens.SignUpScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.WelcomeScreen
+import com.vasant.pillpal.ui.screens.HomeScreen
 
 
 @Composable
@@ -55,11 +57,23 @@ fun NavigationApp() {
             }
         }
         navigation<NavigationRoute.MainScreens>(MainUiRoute.HomeScreen) {
-
-            composable<MainUiRoute.HomeScreen> {
-
+            composable<MainUiRoute.HomeScreen>(enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(700)
+                )
+            }) {
+                HomeScreen(navController)
             }
-            composable<MainUiRoute.AddMedicineScreen> { }
+            composable<MainUiRoute.AddMedicineScreen>(enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(700)
+                )
+            })
+            {
+                AddMedsScreen(navController)
+            }
             composable<MainUiRoute.ChatScreen> { }
             composable<MainUiRoute.SettingScreen> { }
         }

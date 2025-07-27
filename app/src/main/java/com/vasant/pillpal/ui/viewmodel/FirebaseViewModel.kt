@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vasant.pillpal.repository.Auth
-import com.vasant.pillpal.utils.AuthResult
+import com.vasant.pillpal.utils.AuthState
 import com.vasant.pillpal.utils.FirebaseState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,13 +16,18 @@ import javax.inject.Inject
 class FirebaseViewModel @Inject constructor(
     private val auth: Auth
 ) : ViewModel() {
-    var firebaseState by mutableStateOf<FirebaseState>(FirebaseState.Loading)
-    var authState by mutableStateOf<AuthResult>(AuthResult.Loading)
+    var firebaseState by mutableStateOf<FirebaseState?>(value = null)
+
+    //    var authState by mutableStateOf<AuthResult>(AuthResult.Loading)
+    var authState by mutableStateOf<AuthState>(AuthState(Error = null, Success = false))
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
             firebaseState = FirebaseState.Loading
             authState = auth.SingIn(email, password)
-            firebaseState = FirebaseState.Done
+            firebaseState = if (authState.Success) {
+                FirebaseState.Done
+            } else FirebaseState.IsIdle
         }
     }
 
