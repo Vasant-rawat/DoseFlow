@@ -57,9 +57,9 @@ Features to consider for future versions to add more value.
 
 4. Potential Technology Stack
 
-    Frontend (Mobile):
+    Frontend:
 
-        React Native or Flutter for cross-platform (iOS & Android) development.
+        Kotlin Compose For Android development.
 
     Backend & Database:
 
