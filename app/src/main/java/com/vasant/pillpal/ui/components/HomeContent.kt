@@ -42,9 +42,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.vasant.pillpal.R
 import com.vasant.pillpal.data.db.Medicine
 import com.vasant.pillpal.data.db.MedicineEvent
+import com.vasant.pillpal.ui.navigation.MainUiRoute
+import com.vasant.pillpal.ui.navigation.NavigationRoute
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.SecondaryContainerColor
 import com.vasant.pillpal.ui.theme.jetbrainFamily
@@ -52,7 +56,7 @@ import com.vasant.pillpal.ui.viewmodel.MedicineViewModel
 import com.vasant.pillpal.utils.getFormattedTime
 
 @Composable
-fun HomeContent(padding: PaddingValues, medicineViewModel: MedicineViewModel = hiltViewModel()) {
+fun HomeContent(navController: NavHostController, padding: PaddingValues, medicineViewModel: MedicineViewModel = hiltViewModel()) {
     val medicine = medicineViewModel.meds.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier
@@ -62,7 +66,7 @@ fun HomeContent(padding: PaddingValues, medicineViewModel: MedicineViewModel = h
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             GreetingSection()
-            MedicineDisplaySection(medicine, medicineViewModel)
+            MedicineDisplaySection(navController,medicine, medicineViewModel)
         }
     }
 }
@@ -70,7 +74,7 @@ fun HomeContent(padding: PaddingValues, medicineViewModel: MedicineViewModel = h
 @Composable
 fun GreetingSection() {
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(15.dp),
     ) {
         Column {
             Text(
@@ -102,7 +106,7 @@ fun GreetingSection() {
 }
 
 @Composable
-fun MedicineDisplaySection(medicine: State<List<Medicine>>, medicineViewModel: MedicineViewModel) {
+fun MedicineDisplaySection(navController: NavHostController,medicine: State<List<Medicine>>, medicineViewModel: MedicineViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -159,7 +163,9 @@ fun MedicineDisplaySection(medicine: State<List<Medicine>>, medicineViewModel: M
 
                 // Call-to-Action Button
                 Button(
-                    onClick = {}, modifier = Modifier
+                    onClick = {
+                        navController.navigate(MainUiRoute.AddMedicineScreen)
+                    }, modifier = Modifier
                         .fillMaxWidth(0.6f)
                         .height(48.dp)
                 ) {

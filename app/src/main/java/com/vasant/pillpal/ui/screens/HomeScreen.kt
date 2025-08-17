@@ -13,7 +13,7 @@ import com.vasant.pillpal.ui.viewmodel.MedicineViewModel
 fun HomeScreen(navController: NavHostController) {
     Scaffold(topBar = { TopBarHomeScreen(navController) }, bottomBar = { BottomNavigationBar(navController) }
     ) {
-        HomeContent(it)
+        HomeContent(navController = navController,it)
     }
 }
 

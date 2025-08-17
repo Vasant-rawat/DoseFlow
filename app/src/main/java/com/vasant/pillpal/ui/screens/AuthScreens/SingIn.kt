@@ -1,5 +1,6 @@
 package com.vasant.pillpal.ui.screens.AuthScreens
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -69,9 +70,9 @@ private fun checkEmail(email: String): Boolean {
 @Composable
 fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltViewModel()) {
     val email = remember { mutableStateOf("") }
+    val context = LocalContext.current
     val password = remember { mutableStateOf("") }
     val isValidate = remember { mutableStateOf(false) }
-
     val isPasswordShown = remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     Box(
@@ -90,6 +91,10 @@ fun SignIn(navController: NavController, viewModel: FirebaseViewModel = hiltView
 
             }
         } else if (viewModel.authState.Success) {
+            val sharedPreferences = context.getSharedPreferences("login", Context.MODE_PRIVATE)
+            val  editor =sharedPreferences.edit()
+            editor.putBoolean("IS_LOGGED_IN",true);
+            editor.apply();
             Toast.makeText(
                 LocalContext.current, "User was Sing In successfully ", Toast.LENGTH_SHORT
             ).show()
