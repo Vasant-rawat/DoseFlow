@@ -22,6 +22,16 @@ sealed interface MainUiRoute {
     @Serializable
     object SettingScreen : NavigationRoute
 
+
+    @Serializable
+    object ReminderScreen : NavigationRoute
+
+    @Serializable
+    object ProfileScreen : NavigationRoute
+
+    @Serializable
+    object NotificationScreen : NavigationRoute
+
     @Serializable
     object ChatScreen : NavigationRoute
 }

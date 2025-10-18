@@ -9,25 +9,31 @@ import com.google.gson.Gson
 import com.vasant.pillpal.data.db.Medicine
 import com.vasant.pillpal.ui.ReminderReceiver
 
+private fun requestCodeFor(medicine: Medicine): Int = (medicine.medName + "_" + medicine.time).hashCode()
+
 const val REMINDER = "REMINDER"
 fun setUpAlarm(context: Context, medicine: Medicine) {
     val intent = Intent(context, ReminderReceiver::class.java).apply {
         putExtra(REMINDER, Gson().toJson(medicine))
     }
     val pendingIntent = PendingIntent.getBroadcast(
-        context, medicine.time.toInt(),
+        context, requestCodeFor(medicine),
         intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     try {
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, medicine.time, pendingIntent)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, medicine.time, pendingIntent)
     } catch (e: SecurityException) {
-        Log.d("Alarm", "setUpAlarm: ")
+        Log.d("Alarm", "setUpAlarm: ${e.message}")
     }
 }
 
+fun snoozeAlarm(context: Context, medicine: Medicine, minutes: Int = 10) {
+    val snoozed = medicine.copy(time = System.currentTimeMillis() + minutes * 60_000L)
+    setUpAlarm(context, snoozed)
+}
 
 fun cancelAlarm(context: Context, medicine: Medicine) {
     val intent = Intent(context, ReminderReceiver::class.java).apply {
@@ -35,7 +41,7 @@ fun cancelAlarm(context: Context, medicine: Medicine) {
     }
     val pendingIntent = PendingIntent.getBroadcast(
         context,
-        medicine.time.toInt(),
+        requestCodeFor(medicine),
         intent,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )

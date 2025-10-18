@@ -1,6 +1,7 @@
 package com.vasant.pillpal.data.db
 
 import android.content.Context
+import com.vasant.pillpal.ui.presentation.MedicineType
 
 
 sealed interface MedicineEvent {
@@ -14,7 +15,11 @@ sealed interface MedicineEvent {
         val medicineName: String,
         val date: Long,
         val dosage: String,
+        val med_type: MedicineType?=null,
         val note: String? = null,
         val isCompleted: Boolean = false
     ) : MedicineEvent
+
+    data class MedicineTypeChanged(val med_type: MedicineType) : MedicineEvent
+    data class NoteChanged(val note: String) : MedicineEvent
 }

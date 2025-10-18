@@ -37,7 +37,9 @@ class FirebaseViewModel @Inject constructor(
         viewModelScope.launch {
             firebaseState = FirebaseState.Loading
             authState = auth.SingUp(email, password)
-            firebaseState = FirebaseState.Done
+            firebaseState = if (authState.Success) {
+                FirebaseState.Done
+            } else FirebaseState.IsIdle
         }
     }
 }

@@ -1,12 +1,11 @@
 package com.vasant.pillpal.ui.navigation
 
 import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.ActivityNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -16,18 +15,18 @@ import com.vasant.pillpal.ui.screens.AuthScreens.SignIn
 import com.vasant.pillpal.ui.screens.AuthScreens.SignUpScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.WelcomeScreen
 import com.vasant.pillpal.ui.screens.HomeScreen
-
-
+import com.vasant.pillpal.ui.screens.NotificationsScreen
+import com.vasant.pillpal.ui.screens.SettingsScreen
 
 @Composable
-fun NavigationApp() {
+fun NavigationApp(windowSizeClass: WindowSizeClass) {
     val navController = rememberNavController()
     val context = LocalContext.current
-    val prf= context.getSharedPreferences("login" ,MODE_PRIVATE)
-    val isLoggedIn = prf.getBoolean("IS_LOGGED_IN",false)
-    val startDestination = if(isLoggedIn){
+    val prf = context.getSharedPreferences("login", MODE_PRIVATE)
+    val isLoggedIn = prf.getBoolean("IS_LOGGED_IN", false)
+    val startDestination = if (isLoggedIn) {
         NavigationRoute.MainScreens
-    }else{
+    } else {
         NavigationRoute.AuthScreens
     }
 
@@ -49,14 +48,17 @@ fun NavigationApp() {
             }
 
             composable<AuthenticationRoute.SingUpScreen>(
+
                 enterTransition = {
                     slideInHorizontally(
                         initialOffsetX = { fullWidth -> fullWidth },
                         animationSpec = tween(900)
                     )
                 }
+
+
             ) {
-                SignUpScreen(navController)
+                SignUpScreen(navController, windowSizeClass = windowSizeClass)
             }
 
             composable<AuthenticationRoute.WelcomeScreen>(
@@ -67,7 +69,7 @@ fun NavigationApp() {
                     )
                 }
             ) {
-                WelcomeScreen(navController)
+                WelcomeScreen(navController, windowSizeClass = windowSizeClass)
             }
         }
         navigation<NavigationRoute.MainScreens>(MainUiRoute.HomeScreen) {
@@ -79,17 +81,26 @@ fun NavigationApp() {
             }) {
                 HomeScreen(navController)
             }
-            composable<MainUiRoute.AddMedicineScreen>(enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(700)
-                )
-            })
+            composable<MainUiRoute.AddMedicineScreen>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { fullWidth -> fullWidth },
+                        animationSpec = tween(700)
+                    )
+                },
+            )
             {
                 AddMedsScreen(navController)
             }
             composable<MainUiRoute.ChatScreen> { }
-            composable<MainUiRoute.SettingScreen> { }
+            composable<MainUiRoute.NotificationScreen> {
+
+                NotificationsScreen(navController)
+            }
+            composable<MainUiRoute.SettingScreen> {
+                SettingsScreen(navController)
+            }
+            composable<MainUiRoute.ProfileScreen> { }
         }
 
     }

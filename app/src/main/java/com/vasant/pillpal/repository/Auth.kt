@@ -5,4 +5,5 @@ import com.vasant.pillpal.utils.AuthState
 interface Auth {
     suspend fun SingIn(email: String, password: String): AuthState
     suspend fun SingUp(email: String, password: String): AuthState
+    fun LogOut()
 }
