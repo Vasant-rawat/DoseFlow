@@ -81,11 +81,11 @@ fun buildReminderNotification(
         .setSmallIcon(R.drawable.framemedicine)
         .setLargeIcon(largeIcon)
         .setContentTitle("Medicine Reminder")
-        .setContentText("${'$'}{reminder.medName} is due now • Take ${'$'}{reminder.dosage}")
+        .setContentText("${reminder.medName} is due now \u2022 Take ${reminder.dosage}")
         .setStyle(
             NotificationCompat.BigTextStyle().bigText(
-                "It's time to take ${'$'}{reminder.medName}. Dosage: ${'$'}{reminder.dosage}" +
-                        (reminder.note?.let { "\nNote: ${'$'}it" } ?: "")
+                "It's time to take ${reminder.medName}. Dosage: ${reminder.dosage}" +
+                        (reminder.note?.let { "\nNote: $it" } ?: "")
             )
         )
         .setContentIntent(contentPending)

@@ -1,3 +1,12 @@
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use {
+        localProperties.load(it)
+    }
+}
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -29,8 +38,10 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
         }
         debug {
+            buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
             isMinifyEnabled=true
             isShrinkResources=true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),"proguard-rules.pro")
@@ -45,6 +56,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig=true
     }
 }
 
@@ -86,11 +98,22 @@ dependencies {
     implementation(libs.gson)
 
     //Room Db
-    val room_version = "2.7.1"
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-
+        //Icons
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
+
+    //Constraint Layout
+    implementation(libs.androidx.constraintlayout.compose)
+
+//Generative AI SDK
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+//Retrofit
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
 }

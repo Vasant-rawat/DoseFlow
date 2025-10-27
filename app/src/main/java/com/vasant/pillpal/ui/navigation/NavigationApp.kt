@@ -14,6 +14,7 @@ import com.vasant.pillpal.ui.screens.AddMedsScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.SignIn
 import com.vasant.pillpal.ui.screens.AuthScreens.SignUpScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.WelcomeScreen
+import com.vasant.pillpal.ui.screens.ChatScreen
 import com.vasant.pillpal.ui.screens.HomeScreen
 import com.vasant.pillpal.ui.screens.NotificationsScreen
 import com.vasant.pillpal.ui.screens.SettingsScreen
@@ -21,6 +22,8 @@ import com.vasant.pillpal.ui.screens.SettingsScreen
 @Composable
 fun NavigationApp(windowSizeClass: WindowSizeClass) {
     val navController = rememberNavController()
+
+
     val context = LocalContext.current
     val prf = context.getSharedPreferences("login", MODE_PRIVATE)
     val isLoggedIn = prf.getBoolean("IS_LOGGED_IN", false)
@@ -92,7 +95,11 @@ fun NavigationApp(windowSizeClass: WindowSizeClass) {
             {
                 AddMedsScreen(navController)
             }
-            composable<MainUiRoute.ChatScreen> { }
+            composable<MainUiRoute.ChatScreen> {
+
+                ChatScreen(navController)
+
+            }
             composable<MainUiRoute.NotificationScreen> {
 
                 NotificationsScreen(navController)
