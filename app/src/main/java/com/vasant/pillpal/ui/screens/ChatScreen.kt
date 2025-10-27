@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -30,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.vasant.pillpal.data.chat.ChatUiModel
 import com.vasant.pillpal.ui.viewmodel.ChatViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +40,7 @@ fun ChatScreen(navHost: NavHostController) {
     val viewModel: ChatViewModel = hiltViewModel()
     val conversation by viewModel.conversation.collectAsState()
     val listState = rememberLazyListState()
+    var isLoading by remember { mutableStateOf(false) }
 
     // Auto-scroll to bottom when new messages arrive
     LaunchedEffect(conversation.size) {
@@ -49,7 +53,7 @@ fun ChatScreen(navHost: NavHostController) {
         topBar = {
             ChatTopBar(onBackClick = { navHost.popBackStack() })
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = Color(0xFFF5F7FA)
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -77,12 +81,43 @@ fun ChatScreen(navHost: NavHostController) {
                         MessageBubble(message)
                     }
                 }
+
+                // Typing indicator
+                if (isLoading) {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .align(Alignment.Bottom)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.SmartToy,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(6.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            TypingIndicator()
+                        }
+                    }
+                }
             }
 
             // Input area
             ChatInputBox(
                 onSendMessage = { message ->
+                    isLoading = true
                     viewModel.sendMessage(message)
+                    isLoading = false
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -296,6 +331,33 @@ fun ChatInputBox(
                     contentDescription = "Send message",
                     modifier = Modifier.size(24.dp)
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun TypingIndicator() {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 8.dp)
+            .scale(0.8f),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(3) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
+            ) {
+                // Empty box for dot
+            }
+
+            if (it < 2) {
+                Spacer(modifier = Modifier.width(4.dp))
             }
         }
     }

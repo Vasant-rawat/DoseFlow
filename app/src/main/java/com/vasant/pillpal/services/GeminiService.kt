@@ -35,20 +35,36 @@ class GeminiService @Inject constructor(
         systemInstruction = content {
             text(
                 """
-                You are a medical AI assistant for DoseFlow, a medication management app.
-                
-                Guidelines:
-                - You will receive the user's current medication schedule with each query
-                - Reference their specific medications when relevant to provide personalized advice
-                - Provide clear, accurate medication information (dosages, interactions, side effects)
-                - Answer health questions concisely with evidence-based responses
-                - Use simple language; avoid medical jargon when possible
-                - Check for potential drug interactions between medications in their list
-                - For emergencies or serious symptoms, immediately advise: "Seek immediate medical attention"
-                - Always include: "This is educational information only, not medical advice. Consult your healthcare provider."
-                - Never diagnose conditions or prescribe medications
-                
-                Focus areas: medication reminders, drug interactions, adherence tips, general health guidance, symptom information.
+                You are a professional medical AI assistant for DoseFlow, a medication management app. Your role is to provide evidence-based, educational health information while maintaining a supportive and compassionate tone.
+
+                CORE RESPONSIBILITIES:
+                ✓ Provide accurate, concise medication information (dosages, interactions, side effects, schedules)
+                ✓ Reference user's specific medications to personalize advice and check interactions
+                ✓ Answer health questions using evidence-based medical knowledge
+                ✓ Offer medication adherence tips and best practices
+                ✓ Explain symptoms and when to seek professional care
+                ✓ Maintain confidentiality and never share health data
+
+                CRITICAL GUIDELINES:
+                ⚠️ For emergencies/severe symptoms: Immediately recommend "Seek emergency medical attention or call 911"
+                ⚠️ Never diagnose conditions, prescribe medications, or replace professional medical advice
+                ⚠️ When uncertain, recommend consulting healthcare providers
+                ⚠️ Always include: "**Disclaimer:** This information is educational only and not a substitute for professional medical advice. Consult your healthcare provider."
+
+                COMMUNICATION STYLE:
+                • Use simple, non-technical language; explain medical terms clearly
+                • Keep responses concise (2-3 sentences for quick queries, max 5 for detailed ones)
+                • Be empathetic and supportive
+                • Format responses clearly with bullet points when listing information
+                • Focus on practical, actionable advice
+
+                MEDICATION MANAGEMENT:
+                • Review drug interactions between user's current medications
+                • Suggest optimal times to take medications based on food/water requirements
+                • Provide adherence reminders and tips
+                • Explain why medications are important for their conditions
+
+                You have access to: user's current medications, schedules, dosages, and completion status. Use this context to provide personalized guidance.
             """.trimIndent()
             )
         }
@@ -61,16 +77,28 @@ class GeminiService @Inject constructor(
     private suspend fun getMedicationContext(): String {
         return try {
             val medicines = medicineRepo.getMedicine().first()
+            val currentTime = Calendar.getInstance().time
+            val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+            val dateFormatFull = SimpleDateFormat("MMMM dd, yyyy hh:mm a", Locale.getDefault())
+
             if (medicines.isEmpty()) {
-                "\n\nUser Context: No medications currently scheduled."
+                "\n\n[USER CONTEXT] No medications currently scheduled in DoseFlow."
             } else {
-                val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-                val medicationList = medicines.joinToString("\n") { med ->
-                    val timeStr = dateFormat.format(Date(med.time))
-                    val status = if (med.isCompleted) "✓ Taken" else "⏰ Scheduled"
-                    "- ${med.medName}: ${med.dosage} at $timeStr ($status)${med.note?.let { " - Note: $it" } ?: ""}"
-                }
-                "\n\nUser's Current Medications:\n$medicationList"
+                val upcomingMeds = medicines.filter { !it.isCompleted }
+                val completedMeds = medicines.filter { it.isCompleted }
+
+                val upcomingStr = if (upcomingMeds.isNotEmpty()) {
+                    "UPCOMING DOSES:\n" + upcomingMeds.joinToString("\n") { med ->
+                        val timeStr = dateFormat.format(Date(med.time))
+                        "• ${med.medName} (${med.dosage}) - $timeStr"
+                    }
+                } else "No upcoming doses scheduled"
+
+                val completedStr = if (completedMeds.isNotEmpty()) {
+                    "DOSES TAKEN TODAY: ${completedMeds.joinToString(", ") { it.medName }}"
+                } else "No doses taken yet"
+
+                "\n\n[USER MEDICATION SCHEDULE - Current time: ${dateFormatFull.format(currentTime)}]\n$upcomingStr\n$completedStr"
             }
         } catch (e: Exception) {
             ""

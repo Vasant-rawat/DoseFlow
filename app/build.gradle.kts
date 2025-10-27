@@ -74,6 +74,7 @@ dependencies {
     // Add Material3 Window Size Class for responsive layouts
     implementation(libs.androidx.material3.windowsizeclass)
     implementation(libs.androidx.compose.ui.text)
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

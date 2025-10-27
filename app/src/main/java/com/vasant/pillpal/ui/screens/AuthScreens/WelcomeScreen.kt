@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.navigation.NavController
+import androidx.compose.ui.platform.LocalContext
+import android.content.Context
 import com.vasant.pillpal.ui.navigation.AuthenticationRoute
 import com.vasant.pillpal.ui.theme.BackgroundColor
 import com.vasant.pillpal.ui.theme.SecondaryContainerColor
@@ -36,6 +38,8 @@ fun WelcomeScreen(
     navController: NavController,
     windowSizeClass: WindowSizeClass
 ) {
+    val context = LocalContext.current
+
     // Adaptive tokens
     val horizontalPadding = when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> 24.dp
@@ -183,6 +187,37 @@ fun WelcomeScreen(
                         modifier = Modifier.size(20.dp)
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Guest Login Button
+            Button(
+                onClick = {
+                    // Save guest mode to shared preferences
+                    val prf = context.getSharedPreferences("login", Context.MODE_PRIVATE)
+                    prf.edit().putBoolean("IS_GUEST", true).apply()
+                    prf.edit().putBoolean("IS_LOGGED_IN", true).apply()
+                    navController.navigate(AuthenticationRoute.GuestLoginScreen) {
+                        popUpTo(AuthenticationRoute.WelcomeScreen) { inclusive = true }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SecondaryContainerColor.copy(alpha = 0.2f),
+                    contentColor = SecondaryContainerColor
+                )
+            ) {
+                Text(
+                    text = "Continue as Guest",
+                    fontFamily = rubikFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))

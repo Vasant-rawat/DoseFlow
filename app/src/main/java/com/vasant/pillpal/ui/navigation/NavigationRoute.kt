@@ -14,29 +14,35 @@ sealed interface NavigationRoute {
 @Serializable
 sealed interface MainUiRoute {
     @Serializable
-    data object HomeScreen : NavigationRoute
+    data object  SplashScreen : MainUiRoute
+    @Serializable
+    data object HomeScreen : MainUiRoute
 
     @Serializable
-    data object AddMedicineScreen : NavigationRoute
+    data object AddMedicineScreen : MainUiRoute
 
     @Serializable
-    object SettingScreen : NavigationRoute
+    object SettingScreen : MainUiRoute
 
 
     @Serializable
-    object ReminderScreen : NavigationRoute
+    object ReminderScreen : MainUiRoute
 
     @Serializable
-    object ProfileScreen : NavigationRoute
+    object ProfileScreen : MainUiRoute
 
     @Serializable
-    object NotificationScreen : NavigationRoute
+    object NotificationScreen : MainUiRoute
 
     @Serializable
-    object ChatScreen : NavigationRoute
+    object ChatScreen : MainUiRoute
 }
 
+@Serializable
 sealed interface AuthenticationRoute {
+    @Serializable
+    data object SplashScreen : AuthenticationRoute
+
     @Serializable
     data object WelcomeScreen : AuthenticationRoute
 
@@ -46,5 +52,6 @@ sealed interface AuthenticationRoute {
     @Serializable
     data object SingUpScreen : AuthenticationRoute
 
-
+    @Serializable
+    data object GuestLoginScreen : AuthenticationRoute
 }

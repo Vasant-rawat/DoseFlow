@@ -14,6 +14,8 @@ import com.vasant.pillpal.ui.screens.AddMedsScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.SignIn
 import com.vasant.pillpal.ui.screens.AuthScreens.SignUpScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.WelcomeScreen
+import com.vasant.pillpal.ui.screens.AuthScreens.SplashScreen
+import com.vasant.pillpal.ui.screens.AuthScreens.GuestLoginScreen
 import com.vasant.pillpal.ui.screens.ChatScreen
 import com.vasant.pillpal.ui.screens.HomeScreen
 import com.vasant.pillpal.ui.screens.NotificationsScreen
@@ -23,21 +25,30 @@ import com.vasant.pillpal.ui.screens.SettingsScreen
 fun NavigationApp(windowSizeClass: WindowSizeClass) {
     val navController = rememberNavController()
 
-
     val context = LocalContext.current
     val prf = context.getSharedPreferences("login", MODE_PRIVATE)
     val isLoggedIn = prf.getBoolean("IS_LOGGED_IN", false)
-    val startDestination = if (isLoggedIn) {
-        NavigationRoute.MainScreens
-    } else {
-        NavigationRoute.AuthScreens
-    }
 
     NavHost(
-        navController = navController, startDestination = startDestination
+        navController = navController,
+        startDestination = NavigationRoute.AuthScreens
     ) {
-        navigation<NavigationRoute.AuthScreens>(startDestination = AuthenticationRoute.WelcomeScreen) {
+        navigation<NavigationRoute.AuthScreens>(startDestination = AuthenticationRoute.SplashScreen) {
 
+            composable<AuthenticationRoute.SplashScreen> {
+                SplashScreen(navController, isLoggedIn)
+            }
+
+            composable<AuthenticationRoute.WelcomeScreen>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { fullWidth -> fullWidth },
+                        animationSpec = tween(700)
+                    )
+                }
+            ) {
+                WelcomeScreen(navController, windowSizeClass = windowSizeClass)
+            }
 
             composable<AuthenticationRoute.LoginScreen>(
                 enterTransition = {
@@ -51,20 +62,17 @@ fun NavigationApp(windowSizeClass: WindowSizeClass) {
             }
 
             composable<AuthenticationRoute.SingUpScreen>(
-
                 enterTransition = {
                     slideInHorizontally(
                         initialOffsetX = { fullWidth -> fullWidth },
                         animationSpec = tween(900)
                     )
                 }
-
-
             ) {
                 SignUpScreen(navController, windowSizeClass = windowSizeClass)
             }
 
-            composable<AuthenticationRoute.WelcomeScreen>(
+            composable<AuthenticationRoute.GuestLoginScreen>(
                 enterTransition = {
                     slideInHorizontally(
                         initialOffsetX = { fullWidth -> fullWidth },
@@ -72,7 +80,7 @@ fun NavigationApp(windowSizeClass: WindowSizeClass) {
                     )
                 }
             ) {
-                WelcomeScreen(navController, windowSizeClass = windowSizeClass)
+                GuestLoginScreen(navController)
             }
         }
         navigation<NavigationRoute.MainScreens>(MainUiRoute.HomeScreen) {
