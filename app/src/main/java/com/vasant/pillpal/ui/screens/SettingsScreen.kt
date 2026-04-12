@@ -32,6 +32,7 @@ import com.vasant.pillpal.ui.theme.jetbrainFamily
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.vasant.pillpal.ui.viewmodel.SettingsViewModel
 import com.vasant.pillpal.ui.navigation.AuthenticationRoute
+import com.vasant.pillpal.ui.navigation.MainUiRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -267,7 +268,7 @@ fun SettingsScreen(navController: NavHostController, viewModel: SettingsViewMode
                         icon = Icons.AutoMirrored.Outlined.Help,
                         title = "Help & FAQs",
                         subtitle = "Get help using DoseFlow",
-                        onClick = {},
+                        onClick = { navController.navigate(MainUiRoute.HelpFaqScreen) },
                         isTablet = isTablet
                     )
                 }
@@ -277,7 +278,7 @@ fun SettingsScreen(navController: NavHostController, viewModel: SettingsViewMode
                         icon = Icons.Outlined.Feedback,
                         title = "Send Feedback",
                         subtitle = "Share your thoughts with us",
-                        onClick = {},
+                        onClick = { navController.navigate(MainUiRoute.FeedbackScreen) },
                         isTablet = isTablet
                     )
                 }
@@ -287,7 +288,7 @@ fun SettingsScreen(navController: NavHostController, viewModel: SettingsViewMode
                         icon = Icons.Outlined.Info,
                         title = "About",
                         subtitle = "Version 1.0.0",
-                        onClick = {},
+                        onClick = { navController.navigate(MainUiRoute.AboutScreen) },
                         isTablet = isTablet
                     )
                 }

@@ -20,19 +20,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.vasant.pillpal.R
 import com.vasant.pillpal.data.chat.ChatUiModel
+import com.vasant.pillpal.ui.theme.BackgroundColor
+import com.vasant.pillpal.ui.theme.SecondaryContainerColor
+import com.vasant.pillpal.ui.theme.fontColor
+import com.vasant.pillpal.ui.theme.jetbrainFamily
 import com.vasant.pillpal.ui.viewmodel.ChatViewModel
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +44,6 @@ fun ChatScreen(navHost: NavHostController) {
     val listState = rememberLazyListState()
     var isLoading by remember { mutableStateOf(false) }
 
-    // Auto-scroll to bottom when new messages arrive
     LaunchedEffect(conversation.size) {
         if (conversation.isNotEmpty()) {
             listState.animateScrollToItem(conversation.size - 1)
@@ -53,14 +54,14 @@ fun ChatScreen(navHost: NavHostController) {
         topBar = {
             ChatTopBar(onBackClick = { navHost.popBackStack() })
         },
-        containerColor = Color(0xFFF5F7FA)
+        containerColor = BackgroundColor
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(BackgroundColor)
                 .padding(paddingValues)
         ) {
-            // Messages area
             LazyColumn(
                 state = listState,
                 modifier = Modifier
@@ -82,7 +83,6 @@ fun ChatScreen(navHost: NavHostController) {
                     }
                 }
 
-                // Typing indicator
                 if (isLoading) {
                     item {
                         Row(
@@ -92,18 +92,20 @@ fun ChatScreen(navHost: NavHostController) {
                             horizontalArrangement = Arrangement.Start
                         ) {
                             Surface(
-                                shape = CircleShape,
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(12.dp),
+                                color = SecondaryContainerColor.copy(alpha = 0.15f),
                                 modifier = Modifier
                                     .size(32.dp)
                                     .align(Alignment.Bottom)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.SmartToy,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(6.dp)
-                                )
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = Icons.Default.SmartToy,
+                                        contentDescription = null,
+                                        tint = SecondaryContainerColor,
+                                        modifier = Modifier.padding(6.dp)
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             TypingIndicator()
@@ -112,7 +114,6 @@ fun ChatScreen(navHost: NavHostController) {
                 }
             }
 
-            // Input area
             ChatInputBox(
                 onSendMessage = { message ->
                     isLoading = true
@@ -131,8 +132,8 @@ fun ChatTopBar(onBackClick: () -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(8.dp),
-        color = MaterialTheme.colorScheme.primaryContainer
+            .shadow(4.dp),
+        color = MaterialTheme.colorScheme.background
     ) {
         Row(
             modifier = Modifier
@@ -144,24 +145,25 @@ fun ChatTopBar(onBackClick: () -> Unit) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = fontColor
                 )
             }
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Bot avatar
             Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp)
+                shape = RoundedCornerShape(12.dp),
+                color = SecondaryContainerColor.copy(alpha = 0.15f),
+                modifier = Modifier.size(44.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.SmartToy,
-                    contentDescription = "AI Assistant",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(8.dp)
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.SmartToy,
+                        contentDescription = "AI Assistant",
+                        tint = SecondaryContainerColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -169,14 +171,17 @@ fun ChatTopBar(onBackClick: () -> Unit) {
             Column {
                 Text(
                     text = "Medical Assistant",
-                    style = MaterialTheme.typography.titleMedium,
+                    fontFamily = jetbrainFamily,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    fontSize = 18.sp,
+                    color = fontColor
                 )
                 Text(
                     text = "AI-powered health advisor",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                    fontFamily = jetbrainFamily,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = fontColor.copy(alpha = 0.6f)
                 )
             }
         }
@@ -194,20 +199,21 @@ fun MessageBubble(message: ChatUiModel.Message) {
         horizontalArrangement = if (isFromUser) Arrangement.End else Arrangement.Start
     ) {
         if (!isFromUser) {
-            // Bot avatar for bot messages
             Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(12.dp),
+                color = SecondaryContainerColor.copy(alpha = 0.15f),
                 modifier = Modifier
                     .size(32.dp)
                     .align(Alignment.Bottom)
             ) {
-                Icon(
-                    imageVector = Icons.Default.SmartToy,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(6.dp)
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.SmartToy,
+                        contentDescription = null,
+                        tint = SecondaryContainerColor,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(8.dp))
         }
@@ -221,42 +227,39 @@ fun MessageBubble(message: ChatUiModel.Message) {
                 bottomEnd = 20.dp
             ),
             color = if (isFromUser)
-                MaterialTheme.colorScheme.primary
+                SecondaryContainerColor
             else
-                MaterialTheme.colorScheme.surfaceVariant,
+                MaterialTheme.colorScheme.surface,
             shadowElevation = 2.dp
         ) {
             Text(
                 text = message.text,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                 color = if (isFromUser)
-                    MaterialTheme.colorScheme.onPrimary
+                    Color.White
                 else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodyLarge,
+                    fontColor,
+                fontFamily = jetbrainFamily,
+                fontSize = 14.sp,
                 lineHeight = 20.sp
             )
         }
 
         if (isFromUser) {
             Spacer(modifier = Modifier.width(8.dp))
-            // User avatar space (can be replaced with actual user photo)
             Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.secondary,
+                shape = RoundedCornerShape(12.dp),
+                color = SecondaryContainerColor.copy(alpha = 0.15f),
                 modifier = Modifier
                     .size(32.dp)
                     .align(Alignment.Bottom)
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "U",
-                        color = MaterialTheme.colorScheme.onSecondary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        painter = painterResource(R.drawable.user),
+                        contentDescription = null,
+                        tint = SecondaryContainerColor,
+                        modifier = Modifier.size(18.dp)
                     )
                 }
             }
@@ -275,7 +278,7 @@ fun ChatInputBox(
 
     Surface(
         modifier = modifier,
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.background,
         shadowElevation = 8.dp
     ) {
         Row(
@@ -284,31 +287,37 @@ fun ChatInputBox(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.Bottom
         ) {
-            TextField(
+            OutlinedTextField(
                 value = input,
                 onValueChange = { input = it },
                 modifier = Modifier.weight(1f),
                 placeholder = {
                     Text(
                         "Ask me anything about medications...",
-                        style = MaterialTheme.typography.bodyMedium
+                        fontFamily = jetbrainFamily,
+                        fontSize = 14.sp,
+                        color = fontColor.copy(alpha = 0.4f)
                     )
                 },
                 shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = SecondaryContainerColor.copy(alpha = 0.5f),
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    cursorColor = SecondaryContainerColor,
+                    focusedTextColor = fontColor,
+                    unfocusedTextColor = fontColor
                 ),
                 maxLines = 4,
-                textStyle = MaterialTheme.typography.bodyLarge
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    fontFamily = jetbrainFamily,
+                    fontSize = 14.sp
+                )
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Send button with elevation and disabled state
             FilledIconButton(
                 onClick = {
                     if (input.isNotBlank()) {
@@ -318,18 +327,19 @@ fun ChatInputBox(
                     }
                 },
                 enabled = !isInputEmpty,
-                modifier = Modifier.size(56.dp),
+                modifier = Modifier.size(52.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                    containerColor = SecondaryContainerColor,
+                    contentColor = Color.White,
+                    disabledContainerColor = SecondaryContainerColor.copy(alpha = 0.3f),
+                    disabledContentColor = Color.White.copy(alpha = 0.5f)
                 )
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Send,
                     contentDescription = "Send message",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(22.dp)
                 )
             }
         }
@@ -339,32 +349,19 @@ fun ChatInputBox(
 @Composable
 fun TypingIndicator() {
     Row(
-        modifier = Modifier
-            .padding(vertical = 8.dp)
-            .scale(0.8f),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         repeat(3) {
             Box(
                 modifier = Modifier
                     .size(8.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = SecondaryContainerColor,
                         shape = CircleShape
                     )
-            ) {
-                // Empty box for dot
-            }
-
-            if (it < 2) {
-                Spacer(modifier = Modifier.width(4.dp))
-            }
+            )
         }
     }
-}
-
-@Preview
-@Composable
-fun ChatScreenPreview() {
-    ChatScreen(navHost = NavHostController(LocalContext.current))
 }

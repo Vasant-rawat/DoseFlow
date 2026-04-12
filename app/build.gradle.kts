@@ -41,6 +41,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
+<<<<<<< HEAD
+=======
+            signingConfig = signingConfigs.getByName("debug")
+>>>>>>> f8ee5df (docs: refresh README and add screenshot previews)
         }
         debug {
             buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
