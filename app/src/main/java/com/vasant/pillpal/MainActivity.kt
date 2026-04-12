@@ -1,34 +1,27 @@
 package com.vasant.pillpal
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.vasant.pillpal.ui.theme.PillPalTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.serialization.EncodeDefault
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PillPalTheme {
-               DoseFlow()
+            PillPalTheme(darkTheme = false, dynamicColor = false) {
+                val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(this@MainActivity)
+                DoseFlow(windowSizeClass = windowSizeClass)
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PillPalTheme {
-        DoseFlow()
     }
 }

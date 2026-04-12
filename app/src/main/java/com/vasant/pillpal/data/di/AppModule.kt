@@ -3,18 +3,21 @@ package com.vasant.pillpal.data.di
 import android.content.Context
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
+import com.vasant.pillpal.data.chat.GenerationParameters
 import com.vasant.pillpal.data.db.MedicineDatabase
 import com.vasant.pillpal.data.db.dao.MedicineDao
 import com.vasant.pillpal.repository.Auth
 import com.vasant.pillpal.repository.AuthImplementation
 import com.vasant.pillpal.repository.MedicineRepo
 import com.vasant.pillpal.repository.MedicineRepoImplementation
+import com.vasant.pillpal.services.GeminiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,6 +30,7 @@ object AppModule {
             name = "medicine_db"
         ).fallbackToDestructiveMigration(true).build();
     }
+
 
     @Singleton
     @Provides

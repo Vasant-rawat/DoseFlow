@@ -1,3 +1,12 @@
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use {
+        localProperties.load(it)
+    }
+}
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -24,10 +33,18 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources=true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
+        }
+        debug {
+            buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
+            isMinifyEnabled=true
+            isShrinkResources=true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),"proguard-rules.pro")
         }
     }
     compileOptions {
@@ -39,6 +56,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig=true
     }
 }
 
@@ -52,6 +70,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.auth)
+    implementation(libs.androidx.compose.ui)
+    // Add Material3 Window Size Class for responsive layouts
+    implementation(libs.androidx.material3.windowsizeclass)
+    implementation(libs.androidx.compose.ui.text)
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -60,26 +83,38 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+
     // Navigation Compose for handling navigation within the app
-    val nav_version = "2.8.4"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation(libs.androidx.navigation.compose)
 
     // Dagger Hilt for dependency injection
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("com.google.dagger:hilt-android:2.56.1")
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+
     // KSP for Hilt's annotation processing
     ksp("com.google.dagger:hilt-android-compiler:2.56.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
-
-
    //Gson
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.gson)
 
     //Room Db
-    val room_version = "2.7.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+        //Icons
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
+
+    //Constraint Layout
+    implementation(libs.androidx.constraintlayout.compose)
+
+//Generative AI SDK
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+//Retrofit
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
 }

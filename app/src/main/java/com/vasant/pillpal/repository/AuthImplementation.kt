@@ -1,7 +1,6 @@
 package com.vasant.pillpal.repository
 
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.auth.FirebaseAuth
 import com.vasant.pillpal.utils.AuthState
 import kotlinx.coroutines.tasks.await
@@ -38,5 +37,10 @@ class AuthImplementation @Inject constructor(
         } catch (e: Exception) {
             AuthState(Error = e.message.toString(), Success = false)
         }
+    }
+
+    override fun LogOut() {
+        _auth.signOut()
+        Log.d(TAG, "User signed out.")
     }
 }
