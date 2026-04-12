@@ -7,6 +7,7 @@ if (localPropertiesFile.exists()) {
         localProperties.load(it)
     }
 }
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -32,13 +33,14 @@ android {
     }
 
     buildTypes {
+        val apiKey = localProperties.getProperty("API_KEY") ?: ""
         release {
             isMinifyEnabled = true
-            isShrinkResources=true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
-            buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
+            buildConfigField("String", "API_KEY", "\"$apiKey\"")
         }
         debug {
             buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
@@ -56,7 +58,7 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig=true
+        buildConfig = true
     }
 }
 
@@ -95,7 +97,7 @@ dependencies {
     ksp("com.google.dagger:hilt-android-compiler:2.56.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
-   //Gson
+    //Gson
     implementation(libs.gson)
 
     //Room Db
@@ -103,16 +105,16 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-        //Icons
+    //Icons
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
 
     //Constraint Layout
     implementation(libs.androidx.constraintlayout.compose)
 
-//Generative AI SDK
+    //Generative AI SDK
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 
-//Retrofit
+    //Retrofit
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
