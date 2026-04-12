@@ -16,7 +16,10 @@ import com.vasant.pillpal.ui.screens.AuthScreens.SignUpScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.WelcomeScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.SplashScreen
 import com.vasant.pillpal.ui.screens.AuthScreens.GuestLoginScreen
+import com.vasant.pillpal.ui.screens.AboutScreen
 import com.vasant.pillpal.ui.screens.ChatScreen
+import com.vasant.pillpal.ui.screens.FeedbackScreen
+import com.vasant.pillpal.ui.screens.HelpFaqScreen
 import com.vasant.pillpal.ui.screens.HomeScreen
 import com.vasant.pillpal.ui.screens.NotificationsScreen
 import com.vasant.pillpal.ui.screens.SettingsScreen
@@ -116,6 +119,36 @@ fun NavigationApp(windowSizeClass: WindowSizeClass) {
                 SettingsScreen(navController)
             }
             composable<MainUiRoute.ProfileScreen> { }
+            composable<MainUiRoute.AboutScreen>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { fullWidth -> fullWidth },
+                        animationSpec = tween(700)
+                    )
+                }
+            ) {
+                AboutScreen(navController)
+            }
+            composable<MainUiRoute.HelpFaqScreen>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { fullWidth -> fullWidth },
+                        animationSpec = tween(700)
+                    )
+                }
+            ) {
+                HelpFaqScreen(navController)
+            }
+            composable<MainUiRoute.FeedbackScreen>(
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { fullWidth -> fullWidth },
+                        animationSpec = tween(700)
+                    )
+                }
+            ) {
+                FeedbackScreen(navController)
+            }
         }
 
     }

@@ -36,6 +36,15 @@ sealed interface MainUiRoute {
 
     @Serializable
     object ChatScreen : MainUiRoute
+
+    @Serializable
+    object AboutScreen : MainUiRoute
+
+    @Serializable
+    object HelpFaqScreen : MainUiRoute
+
+    @Serializable
+    object FeedbackScreen : MainUiRoute
 }
 
 @Serializable
