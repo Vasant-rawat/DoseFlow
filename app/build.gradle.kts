@@ -44,7 +44,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         debug {
-            buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
+            buildConfigField("String", "API_KEY", "\"$apiKey\"")
             isMinifyEnabled=true
             isShrinkResources=true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),"proguard-rules.pro")
