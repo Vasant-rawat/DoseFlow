@@ -21,7 +21,6 @@ plugins {
 android {
     namespace = "com.vasant.pillpal"
     compileSdk = 35
-
     defaultConfig {
         applicationId = "com.vasant.pillpal"
         minSdk = 24
