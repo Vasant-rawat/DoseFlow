@@ -8,7 +8,6 @@ import android.os.Build
 import com.vasant.pillpal.ui.ReminderReceiver
 
 class AlarmScheduler(private val context: Context) {
-
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     fun schedule(timeInMillis: Long, medicationName: String) {

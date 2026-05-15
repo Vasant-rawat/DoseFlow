@@ -21,7 +21,6 @@ plugins {
 android {
     namespace = "com.vasant.pillpal"
     compileSdk = 35
-
     defaultConfig {
         applicationId = "com.vasant.pillpal"
         minSdk = 24
@@ -41,13 +40,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
-<<<<<<< HEAD
-=======
             signingConfig = signingConfigs.getByName("debug")
->>>>>>> f8ee5df (docs: refresh README and add screenshot previews)
         }
         debug {
-            buildConfigField("String", "API_KEY", localProperties.getProperty("API_KEY"))
+            buildConfigField("String", "API_KEY", "\"$apiKey\"")
             isMinifyEnabled=true
             isShrinkResources=true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),"proguard-rules.pro")

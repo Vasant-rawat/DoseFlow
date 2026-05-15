@@ -18,7 +18,7 @@ class GeminiService @Inject constructor(
     // The complex constructor you were trying to use is internal.
     private val generativeModel = GenerativeModel(
         // 1. Model name
-        modelName = "gemini-2.5-flash",
+        modelName = "gemini-3.1-flash-lite",
 
         // 2. Your API Key from BuildConfig
         apiKey = BuildConfig.API_KEY,
